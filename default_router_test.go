@@ -13,7 +13,6 @@ func Test_Route_Creation(t *testing.T) {
 	router := tuu.NewRouter()
 	router.GET("/testing", func(ctx tuu.Context) error { return nil })
 
-
 	routes := router.GetRoutes()
 	r.Len(routes, 1)
 	route := routes[0]

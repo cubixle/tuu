@@ -1,11 +1,20 @@
 package tuu
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 
 	"github.com/gorilla/mux"
 )
+
+type Config struct {
+	IPAddr string
+	Port   string
+}
 
 func New(r Router) *App {
 	return &App{router: r}
@@ -15,7 +24,7 @@ type App struct {
 	router Router
 }
 
-func (a *App) Serve() error {
+func (a *App) Serve(cfg Config) error {
 	r := mux.NewRouter()
 
 	for _, route := range a.router.GetRoutes() {
@@ -27,29 +36,26 @@ func (a *App) Serve() error {
 	}
 
 	server := http.Server{
-		Addr:    "",
+		Addr:    fmt.Sprintf("%s:%s", cfg.IPAddr, cfg.Port),
 		Handler: r,
 	}
 
-	/*ctx, cancel := sigtx.WithCancel(a.Context, syscall.SIGTERM, os.Interrupt)
-	defer cancel()
-
+	// Check for a closing signal
 	go func() {
-		// gracefully shut down the application when the context is cancelled
-		<-ctx.Done()
-		fmt.Println("Shutting down application")
+		// Graceful shutdown
+		sigquit := make(chan os.Signal, 1)
+		signal.Notify(sigquit, os.Interrupt, os.Kill)
 
-		err := a.Stop(ctx.Err())
-		if err != nil {
-			fmt.Println(err)
+		sig := <-sigquit
+		log.Printf("caught sig: %+v", sig)
+		log.Printf("Gracefully shutting down server...")
+
+		if err := server.Shutdown(context.Background()); err != nil {
+			log.Printf("Unable to shut down server: %v", err)
+		} else {
+			log.Println("Server stopped")
 		}
-
-		err = server.Shutdown(ctx)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-	}()*/
+	}()
 
 	// start the web server
 	return server.ListenAndServe()
