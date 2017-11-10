@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/gobuffalo/plush"
-
 	"github.com/gobuffalo/buffalo/render"
 )
 
@@ -70,7 +68,7 @@ func (d *DefaultContext) Value(key interface{}) interface{} {
 }
 
 func (d *DefaultContext) Render(status int, rr render.Renderer) error {
-	p := plush.NewContext()
+	//p := plush.NewContext()
 
 	/*if rr != nil {
 		data := d.data

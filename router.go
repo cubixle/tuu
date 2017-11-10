@@ -1,9 +1,14 @@
 package tuu
 
+import "net/http"
+
 type Handler func(Context) error
 
 type Router interface {
-	GET(path string, ctx Context)
-	POST(path string, ctx Context)
+	GET(path string, h Handler)
+	POST(path string, h Handler)
+	Static(path string, root http.FileSystem)
+
 	GetRoutes() []*Route
+	GetStaticRoutes() []*StaticRoute
 }

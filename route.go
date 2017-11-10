@@ -22,3 +22,8 @@ func (r *Route) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		c.Response().Write([]byte(err.Error()))
 	}
 }
+
+type StaticRoute struct {
+	Path    string
+	Handler http.Handler
+}
