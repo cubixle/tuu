@@ -25,6 +25,8 @@ type App struct {
 }
 
 func (a *App) Serve(cfg Config) error {
+	log.Printf("http server running @ %s:%s", cfg.IPAddr, cfg.Port)
+
 	r := mux.NewRouter()
 
 	for _, route := range a.router.GetRoutes() {
@@ -61,7 +63,5 @@ func (a *App) Serve(cfg Config) error {
 	if err := server.ListenAndServe(); err != nil {
 		return err
 	}
-
-	log.Printf("http server running @ %s:%s", cfg.IPAddr, cfg.Port)
 	return nil
 }
