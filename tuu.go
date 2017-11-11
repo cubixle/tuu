@@ -58,5 +58,10 @@ func (a *App) Serve(cfg Config) error {
 	}()
 
 	// start the web server
-	return server.ListenAndServe()
+	if err := server.ListenAndServe(); err != nil {
+		return err
+	}
+
+	log.Printf("http server running @ %s:%s", cfg.IPAddr, cfg.Port)
+	return nil
 }
