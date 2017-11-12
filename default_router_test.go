@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lukerodham/tuu"
 	"github.com/stretchr/testify/require"
-	"gitlab.com/lrodham/tuu"
 )
 
 func Test_Route_Creation(t *testing.T) {

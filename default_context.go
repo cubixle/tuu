@@ -1,7 +1,9 @@
 package tuu
 
 import (
+	"bytes"
 	"context"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -68,9 +70,7 @@ func (d *DefaultContext) Value(key interface{}) interface{} {
 }
 
 func (d *DefaultContext) Render(status int, rr render.Renderer) error {
-	//p := plush.NewContext()
-
-	/*if rr != nil {
+	if rr != nil {
 		data := d.data
 		pp := map[string]string{}
 		for k, v := range d.params {
@@ -83,19 +83,19 @@ func (d *DefaultContext) Render(status int, rr render.Renderer) error {
 
 		err := rr.Render(bb, data)
 		if err != nil {
-			return HTTPError{Status: 500, Cause: errors.WithStack(err)}
+			return err
 		}
 
 		d.Response().Header().Set("Content-Type", rr.ContentType())
 		d.Response().WriteHeader(status)
 		_, err = io.Copy(d.Response(), bb)
 		if err != nil {
-			return HTTPError{Status: 500, Cause: errors.WithStack(err)}
+			return err
 		}
 
 		return nil
 	}
-	*/
+
 	d.Response().WriteHeader(status)
 	return nil
 }

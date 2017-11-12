@@ -2,7 +2,9 @@ package examples
 
 import (
 	"log"
-	"gitlab.com/lrodham/tuu"
+
+	"github.com/gin-gonic/gin/render"
+	"github.com/lukerodham/tuu"
 )
 
 func main() {
@@ -12,8 +14,8 @@ func main() {
 		ctx.Set("template_data", "some value")
 
 		return ctx.Render(200, render.HTML("template_name.html"))
-	}) 
- 
+	})
+
 	router.POST("/login", func(ctx tuu.Context) error {
 		username := ctx.Param("username")
 		password := ctx.Param("password")
