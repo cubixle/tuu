@@ -8,16 +8,23 @@ import (
 	"net/url"
 
 	"github.com/gobuffalo/buffalo/render"
+	"github.com/gorilla/mux"
 )
 
 func NewContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultContext {
 	data := make(map[string]interface{})
 	data["path"] = r.Path
 
+	params := req.URL.Query()
+	vars := mux.Vars(req)
+	for k, v := range vars {
+		params.Set(k, v)
+	}
+
 	return &DefaultContext{
 		response: res,
 		request:  req,
-		params:   req.URL.Query(),
+		params:   params,
 		data:     data,
 	}
 }
