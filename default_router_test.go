@@ -38,12 +38,13 @@ func Test_Prefix_Route_Creation(t *testing.T) {
 	r := require.New(t)
 
 	router := tuu.NewRouter()
-	router.Prefix("/prefix")
+	router.Prefix("/prefix/")
 
 	router.GET("/home", func(ctx tuu.Context) error { return nil })
-
+	router.GET("/home/about-us/", func(ctx tuu.Context) error { return nil })
 	routes := router.GetRoutes()
-	r.Len(routes, 1)
-	route := routes[0]
-	r.Contains(route.Path, "/prefix")
+	r.Len(routes, 2)
+	for _, route := range routes {
+		r.Contains(route.Path, "/prefix/home")
+	}
 }

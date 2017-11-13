@@ -50,7 +50,7 @@ func (r *DefaultRouter) GetStaticRoutes() []*StaticRoute {
 
 func (r *DefaultRouter) addRoute(m, p string, h Handler) {
 	if r.prefix != "" {
-		p = fmt.Sprintf("/%s/%s", strings.TrimPrefix(r.prefix, "/"), strings.TrimSuffix(p, "/"))
+		p = fmt.Sprintf("/%s/%s", strings.Trim(r.prefix, "/"), strings.Trim(p, "/"))
 	}
 
 	r.Routes = append(r.Routes, &Route{
