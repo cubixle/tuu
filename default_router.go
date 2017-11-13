@@ -17,7 +17,7 @@ type DefaultRouter struct {
 	prefix string
 }
 
-func (r *Prefix) Prefix(path string) {
+func (r *DefaultRouter) Prefix(path string) {
 	r.prefix = path
 }
 
@@ -49,11 +49,13 @@ func (r *DefaultRouter) GetStaticRoutes() []*StaticRoute {
 }
 
 func (r *DefaultRouter) addRoute(m, p string, h Handler) {
-	path := fmt.Sprintf("/%s/%s", strings.TrimPrefix(r.prefix, "/"), strings.TrimSuffix(p, "/"))
+	if r.prefix != "" {
+		p = fmt.Sprintf("/%s/%s", strings.TrimPrefix(r.prefix, "/"), strings.TrimSuffix(p, "/"))
+	}
 
 	r.Routes = append(r.Routes, &Route{
 		Method:  m,
-		Path:    path,
+		Path:    p,
 		Handler: h,
 	})
 }
