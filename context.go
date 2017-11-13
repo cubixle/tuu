@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+
 	"github.com/gobuffalo/buffalo/render"
 )
 
@@ -15,4 +16,5 @@ type Context interface {
 	Param(key string) string
 	Set(key string, value interface{})
 	Render(status int, rr render.Renderer) error
+	Redirect(status int, url string) error
 }
