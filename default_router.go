@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func NewRouter() *DefaultRouter {
+func NewRouter() Router {
 	return &DefaultRouter{}
 }
 
