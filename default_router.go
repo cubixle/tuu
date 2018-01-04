@@ -62,5 +62,6 @@ func (r *DefaultRouter) addRoute(m, p string, h Handler) {
 		Method:  m,
 		Path:    p,
 		Handler: h,
+		Env:     r.env,
 	})
 }
