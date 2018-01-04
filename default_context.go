@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultContext {
+func NewContext(r Route, res http.ResponseWriter, req *http.Request, env string) *DefaultContext {
 	data := make(map[string]interface{})
 	data["path"] = r.Path
 
@@ -26,6 +26,7 @@ func NewContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultCon
 		request:  req,
 		params:   params,
 		data:     data,
+		env:      env,
 	}
 }
 
@@ -36,6 +37,7 @@ type DefaultContext struct {
 	params      url.Values
 	contentType string
 	data        map[string]interface{}
+	env         string
 }
 
 // Response returns the original Response for the request.
@@ -110,4 +112,8 @@ func (d *DefaultContext) Render(status int, rr render.Renderer) error {
 func (d *DefaultContext) Redirect(status int, url string) error {
 	http.Redirect(d.Response(), d.Request(), url, status)
 	return nil
+}
+
+func (d *DefaultContext) Env() string {
+	return d.env
 }

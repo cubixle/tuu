@@ -6,6 +6,8 @@ type Handler func(Context) error
 
 type Router interface {
 	Prefix(path string)
+	SetEnv(env string)
+
 	GET(path string, h Handler)
 	POST(path string, h Handler)
 	Static(path string, root http.FileSystem)

@@ -14,6 +14,7 @@ import (
 type Config struct {
 	IPAddr string
 	Port   string
+	Env    string
 }
 
 func New(r Router) *App {
@@ -25,7 +26,7 @@ type App struct {
 }
 
 func (a *App) Serve(cfg Config) error {
-	log.Printf("http server running @ %s:%s", cfg.IPAddr, cfg.Port)
+	log.Printf("http server running @ http://%s:%s", cfg.IPAddr, cfg.Port)
 
 	r := mux.NewRouter()
 
@@ -60,8 +61,5 @@ func (a *App) Serve(cfg Config) error {
 	}()
 
 	// start the web server
-	if err := server.ListenAndServe(); err != nil {
-		return err
-	}
-	return nil
+	return server.ListenAndServe()
 }

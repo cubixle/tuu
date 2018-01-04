@@ -15,10 +15,15 @@ type DefaultRouter struct {
 	StaticRoutes []*StaticRoute
 
 	prefix string
+	env    string
 }
 
 func (r *DefaultRouter) Prefix(path string) {
 	r.prefix = path
+}
+
+func (r *DefaultRouter) SetEnv(env string) {
+	r.env = env
 }
 
 func (r *DefaultRouter) GET(path string, h Handler) {

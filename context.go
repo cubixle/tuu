@@ -17,4 +17,5 @@ type Context interface {
 	Set(key string, value interface{})
 	Render(status int, rr render.Renderer) error
 	Redirect(status int, url string) error
+	Env() string
 }
