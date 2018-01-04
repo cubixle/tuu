@@ -14,6 +14,7 @@ import (
 func NewContext(r Route, res http.ResponseWriter, req *http.Request, env string) *DefaultContext {
 	data := make(map[string]interface{})
 	data["path"] = r.Path
+	data["env"] = env
 
 	params := req.URL.Query()
 	vars := mux.Vars(req)
