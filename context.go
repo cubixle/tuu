@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/gobuffalo/buffalo/render"
+	"github.com/sirupsen/logrus"
 )
 
 type Context interface {
@@ -18,4 +19,5 @@ type Context interface {
 	Render(status int, rr render.Renderer) error
 	Redirect(status int, url string) error
 	Env() string
+	Logger() *logrus.Logger
 }

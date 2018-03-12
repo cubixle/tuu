@@ -11,8 +11,7 @@ func main() {
 	// The render we currently use is the one built by gobuffalo.
 	r := render.New(render.Options{})
 
-	router := tuu.NewRouter()
-	router.SetEnv("dev")
+	router := tuu.NewRouter(tuu.RouterEnv("env"))
 	router.GET("/home", func(ctx tuu.Context) error {
 		ctx.Set("template_data", "some value")
 
@@ -28,13 +27,12 @@ func main() {
 		return nil
 	})
 
-	app := tuu.New(router)
-	err := app.Serve(tuu.Config{
+	app := tuu.New(router, tuu.Config{
 		IPAddr: "127.0.0.1",
 		Port:   "8080",
 		Env:    "dev",
-	}
-	
+	})
+	err := app.Serve()
 	if err != nil {
 		panic(err)
 	}

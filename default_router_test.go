@@ -37,8 +37,7 @@ func Test_Static_Route_Creation(t *testing.T) {
 func Test_Prefix_Route_Creation(t *testing.T) {
 	r := require.New(t)
 
-	router := tuu.NewRouter()
-	router.Prefix("/prefix/")
+	router := tuu.NewRouter(tuu.RouterPrefix("/prefix"))
 
 	router.GET("/home", func(ctx tuu.Context) error { return nil })
 	router.GET("/home/about-us/", func(ctx tuu.Context) error { return nil })

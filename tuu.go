@@ -17,16 +17,17 @@ type Config struct {
 	Env    string
 }
 
-func New(r Router) *App {
-	return &App{router: r}
+func New(r Router, cfg Config) *App {
+	return &App{router: r, cfg: cfg}
 }
 
 type App struct {
 	router Router
+	cfg    Config
 }
 
-func (a *App) Serve(cfg Config) error {
-	log.Printf("http server running @ http://%s:%s", cfg.IPAddr, cfg.Port)
+func (a *App) Serve() error {
+	log.Printf("http server running @ http://%s:%s", a.cfg.IPAddr, a.cfg.Port)
 
 	r := mux.NewRouter()
 
@@ -39,7 +40,7 @@ func (a *App) Serve(cfg Config) error {
 	}
 
 	server := http.Server{
-		Addr:    fmt.Sprintf("%s:%s", cfg.IPAddr, cfg.Port),
+		Addr:    fmt.Sprintf("%s:%s", a.cfg.IPAddr, a.cfg.Port),
 		Handler: r,
 	}
 

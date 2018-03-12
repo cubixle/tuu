@@ -6,24 +6,20 @@ import (
 	"strings"
 )
 
-func NewRouter() Router {
-	return &DefaultRouter{}
+func NewRouter(opts ...RouterOption) Router {
+	router := &DefaultRouter{}
+	router.Options = &RouterOptions{}
+	for _, opt := range opts {
+		opt(router.Options)
+	}
+
+	return router
 }
 
 type DefaultRouter struct {
 	Routes       []*Route
 	StaticRoutes []*StaticRoute
-
-	prefix string
-	env    string
-}
-
-func (r *DefaultRouter) Prefix(path string) {
-	r.prefix = path
-}
-
-func (r *DefaultRouter) SetEnv(env string) {
-	r.env = env
+	Options      *RouterOptions
 }
 
 func (r *DefaultRouter) GET(path string, h Handler) {
@@ -53,15 +49,45 @@ func (r *DefaultRouter) GetStaticRoutes() []*StaticRoute {
 	return r.StaticRoutes
 }
 
+func (r *DefaultRouter) GetOptions() *RouterOptions {
+	return r.Options
+}
+
 func (r *DefaultRouter) addRoute(m, p string, h Handler) {
-	if r.prefix != "" {
-		p = fmt.Sprintf("/%s/%s", strings.Trim(r.prefix, "/"), strings.Trim(p, "/"))
+	if r.Options.Prefix != "" {
+		p = fmt.Sprintf("/%s/%s", strings.Trim(r.Options.Prefix, "/"), strings.Trim(p, "/"))
 	}
 
 	r.Routes = append(r.Routes, &Route{
 		Method:  m,
 		Path:    p,
 		Handler: h,
-		Env:     r.env,
+		Env:     r.Options.Env,
 	})
+}
+
+type RouterOptions struct {
+	Env             string
+	Prefix          string
+	MiddlewareStack MiddlewareStack
+}
+
+type RouterOption func(*RouterOptions)
+
+func RouterEnv(env string) RouterOption {
+	return func(o *RouterOptions) {
+		o.Env = env
+	}
+}
+
+func RouterPrefix(p string) RouterOption {
+	return func(o *RouterOptions) {
+		o.Prefix = p
+	}
+}
+
+func RouterMiddleware(ms MiddlewareStack) RouterOption {
+	return func(o *RouterOptions) {
+		o.MiddlewareStack = ms
+	}
 }

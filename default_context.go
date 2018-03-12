@@ -9,12 +9,13 @@ import (
 
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 )
 
-func NewContext(r Route, res http.ResponseWriter, req *http.Request, env string) *DefaultContext {
+func newContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultContext {
 	data := make(map[string]interface{})
 	data["path"] = r.Path
-	data["env"] = env
+	data["env"] = r.Env
 
 	params := req.URL.Query()
 	vars := mux.Vars(req)
@@ -27,7 +28,7 @@ func NewContext(r Route, res http.ResponseWriter, req *http.Request, env string)
 		request:  req,
 		params:   params,
 		data:     data,
-		env:      env,
+		env:      r.Env,
 	}
 }
 
@@ -39,6 +40,7 @@ type DefaultContext struct {
 	contentType string
 	data        map[string]interface{}
 	env         string
+	logger      *logrus.Logger
 }
 
 // Response returns the original Response for the request.
@@ -117,4 +119,8 @@ func (d *DefaultContext) Redirect(status int, url string) error {
 
 func (d *DefaultContext) Env() string {
 	return d.env
+}
+
+func (d *DefaultContext) Logger() *logrus.Logger {
+	return d.logger
 }
