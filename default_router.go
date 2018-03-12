@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
 func NewRouter(opts ...RouterOption) Router {
@@ -59,10 +61,12 @@ func (r *DefaultRouter) addRoute(m, p string, h Handler) {
 	}
 
 	r.Routes = append(r.Routes, &Route{
-		Method:  m,
-		Path:    p,
-		Handler: h,
-		Env:     r.Options.Env,
+		Method:     m,
+		Path:       p,
+		Handler:    h,
+		Env:        r.Options.Env,
+		Middleware: r.Options.MiddlewareStack,
+		Logger:     r.Options.Logger,
 	})
 }
 
@@ -70,6 +74,7 @@ type RouterOptions struct {
 	Env             string
 	Prefix          string
 	MiddlewareStack MiddlewareStack
+	Logger          *logrus.Logger
 }
 
 type RouterOption func(*RouterOptions)
@@ -89,5 +94,11 @@ func RouterPrefix(p string) RouterOption {
 func RouterMiddleware(ms MiddlewareStack) RouterOption {
 	return func(o *RouterOptions) {
 		o.MiddlewareStack = ms
+	}
+}
+
+func RouterLogger(l *logrus.Logger) RouterOption {
+	return func(o *RouterOptions) {
+		o.Logger = l
 	}
 }

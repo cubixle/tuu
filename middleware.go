@@ -16,6 +16,7 @@ func (m *MiddlewareStack) Get() []Middleware {
 
 func (m *MiddlewareStack) handler(r *Route) Handler {
 	handler := r.Handler
+
 	if len(m.stack) == 0 {
 		return handler
 	}

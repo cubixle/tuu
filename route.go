@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	gcontext "github.com/gorilla/context"
+	"github.com/sirupsen/logrus"
 )
 
 type Route struct {
@@ -12,6 +13,7 @@ type Route struct {
 	Handler    Handler
 	Env        string
 	Middleware MiddlewareStack
+	Logger     *logrus.Logger
 }
 
 func (r *Route) ServeHTTP(res http.ResponseWriter, req *http.Request) {

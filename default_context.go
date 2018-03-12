@@ -29,6 +29,7 @@ func newContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultCon
 		params:   params,
 		data:     data,
 		env:      r.Env,
+		logger:   r.Logger,
 	}
 }
 
