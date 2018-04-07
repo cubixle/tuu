@@ -20,4 +20,6 @@ type Context interface {
 	Redirect(status int, url string) error
 	Env() string
 	Logger() *logrus.Logger
+	Session() *Session
+	Flash() *Flash
 }

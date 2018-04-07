@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (a *App) newContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultContext {
+func newContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultContext {
 	data := make(map[string]interface{})
 	data["path"] = r.Path
 	data["env"] = r.Env
@@ -23,7 +23,7 @@ func (a *App) newContext(r Route, res http.ResponseWriter, req *http.Request) *D
 		params.Set(k, v)
 	}
 
-	sessionStore, _ := a.cfg.SessionStore.Get(req, a.cfg.SessionName)
+	sessionStore, _ := r.Session.Get(req, r.SessionName)
 	session := &Session{
 		Session: sessionStore,
 		req:     req,
@@ -108,6 +108,11 @@ func (d *DefaultContext) Render(status int, rr render.Renderer) error {
 		err := rr.Render(bb, data)
 		if err != nil {
 			return err
+		}
+
+		if d.Session() != nil {
+			d.Flash().Clear()
+			d.Flash().persist(d.Session())
 		}
 
 		d.Response().Header().Set("Content-Type", rr.ContentType())

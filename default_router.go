@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gorilla/sessions"
 	"github.com/sirupsen/logrus"
 )
 
@@ -22,11 +23,6 @@ type DefaultRouter struct {
 	Routes       []*Route
 	StaticRoutes []*StaticRoute
 	Options      *RouterOptions
-	app          *App
-}
-
-func (r *DefaultRouter) SetApp(app *App) {
-	r.app = app
 }
 
 func (r *DefaultRouter) GET(path string, h Handler) {
@@ -66,13 +62,14 @@ func (r *DefaultRouter) addRoute(m, p string, h Handler) {
 	}
 
 	r.Routes = append(r.Routes, &Route{
-		Method:     m,
-		Path:       p,
-		Handler:    h,
-		Env:        r.Options.Env,
-		Middleware: r.Options.MiddlewareStack,
-		Logger:     r.Options.Logger,
-		app:        r.app,
+		Method:      m,
+		Path:        p,
+		Handler:     h,
+		Env:         r.Options.Env,
+		Middleware:  r.Options.MiddlewareStack,
+		Logger:      r.Options.Logger,
+		Session:     r.Options.SessionStore,
+		SessionName: "_tuu_session_",
 	})
 }
 
@@ -81,6 +78,7 @@ type RouterOptions struct {
 	Prefix          string
 	MiddlewareStack MiddlewareStack
 	Logger          *logrus.Logger
+	SessionStore    sessions.Store
 }
 
 type RouterOption func(*RouterOptions)
@@ -106,5 +104,11 @@ func RouterMiddleware(ms MiddlewareStack) RouterOption {
 func RouterLogger(l *logrus.Logger) RouterOption {
 	return func(o *RouterOptions) {
 		o.Logger = l
+	}
+}
+
+func RouterSessionStore(store sessions.Store) RouterOption {
+	return func(o *RouterOptions) {
+		o.SessionStore = store
 	}
 }

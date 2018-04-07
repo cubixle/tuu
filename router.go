@@ -5,7 +5,6 @@ import "net/http"
 type Handler func(Context) error
 
 type Router interface {
-	SetApp(app *App)
 	GET(path string, h Handler)
 	POST(path string, h Handler)
 	Static(path string, root http.FileSystem)
