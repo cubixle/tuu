@@ -9,16 +9,26 @@ import (
 	"os/signal"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 )
 
 type Config struct {
-	IPAddr string
-	Port   string
-	Env    string
+	IPAddr       string
+	Port         string
+	Env          string
+	SessionName  string
+	SessionStore sessions.Store
 }
 
 func New(r Router, cfg Config) *App {
-	return &App{router: r, cfg: cfg}
+	cfg.SessionName = "_tuu_session"
+	// TODO: make session secret actual, secret.
+	cfg.SessionStore = sessions.NewCookieStore([]byte("secret"))
+	app := &App{router: r, cfg: cfg}
+
+	r.SetApp(app)
+
+	return app
 }
 
 type App struct {

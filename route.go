@@ -14,12 +14,13 @@ type Route struct {
 	Env        string
 	Middleware MiddlewareStack
 	Logger     *logrus.Logger
+	app        *App
 }
 
 func (r *Route) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	defer gcontext.Clear(req)
 
-	c := newContext(*r, res, req)
+	c := r.app.newContext(*r, res, req)
 
 	err := r.Middleware.handler(r)(c)
 

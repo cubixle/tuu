@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func newContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultContext {
+func (a *App) newContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultContext {
 	data := make(map[string]interface{})
 	data["path"] = r.Path
 	data["env"] = r.Env
@@ -23,6 +23,13 @@ func newContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultCon
 		params.Set(k, v)
 	}
 
+	sessionStore, _ := a.cfg.SessionStore.Get(req, a.cfg.SessionName)
+	session := &Session{
+		Session: sessionStore,
+		req:     req,
+		res:     res,
+	}
+
 	return &DefaultContext{
 		response: res,
 		request:  req,
@@ -30,6 +37,8 @@ func newContext(r Route, res http.ResponseWriter, req *http.Request) *DefaultCon
 		data:     data,
 		env:      r.Env,
 		logger:   r.Logger,
+		session:  session,
+		flash:    newFlash(session),
 	}
 }
 
@@ -42,6 +51,8 @@ type DefaultContext struct {
 	data        map[string]interface{}
 	env         string
 	logger      *logrus.Logger
+	session     *Session
+	flash       *Flash
 }
 
 // Response returns the original Response for the request.
@@ -124,4 +135,12 @@ func (d *DefaultContext) Env() string {
 
 func (d *DefaultContext) Logger() *logrus.Logger {
 	return d.logger
+}
+
+func (d *DefaultContext) Session() *Session {
+	return d.session
+}
+
+func (d *DefaultContext) Flash() *Flash {
+	return d.flash
 }

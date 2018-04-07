@@ -22,6 +22,11 @@ type DefaultRouter struct {
 	Routes       []*Route
 	StaticRoutes []*StaticRoute
 	Options      *RouterOptions
+	app          *App
+}
+
+func (r *DefaultRouter) SetApp(app *App) {
+	r.app = app
 }
 
 func (r *DefaultRouter) GET(path string, h Handler) {
@@ -67,6 +72,7 @@ func (r *DefaultRouter) addRoute(m, p string, h Handler) {
 		Env:        r.Options.Env,
 		Middleware: r.Options.MiddlewareStack,
 		Logger:     r.Options.Logger,
+		app:        r.app,
 	})
 }
 
