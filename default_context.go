@@ -103,6 +103,9 @@ func (d *DefaultContext) Render(status int, rr render.Renderer) error {
 
 		data["params"] = pp
 		data["request"] = d.Request()
+		data["session"] = d.Session()
+		data["flash"] = d.Flash().data
+
 		bb := &bytes.Buffer{}
 
 		err := rr.Render(bb, data)
