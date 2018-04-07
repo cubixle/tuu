@@ -133,6 +133,8 @@ func (d *DefaultContext) Render(status int, rr render.Renderer) error {
 }
 
 func (d *DefaultContext) Redirect(status int, url string) error {
+	d.Flash().persist(d.Session())
+
 	http.Redirect(d.Response(), d.Request(), url, status)
 	return nil
 }
