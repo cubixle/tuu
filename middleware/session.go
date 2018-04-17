@@ -4,7 +4,7 @@ import (
 	"github.com/lukerodham/tuu"
 )
 
-func SessionSaver(next tuu.Handler) Handler {
+func SessionSaver(next tuu.Handler) tuu.Handler {
 	return func(c tuu.Context) error {
 		err := next(c)
 		if err != nil {
